@@ -27,4 +27,49 @@ func TestReverseBytes(t *testing.T) {
 		t.Errorf("Expected %v, but got %v", expected3, result3)
 	}
 }
+
+
+type mockContext struct {
+}
+
+func (m *mockContext) GetStatusChange(readers []scard.ReaderState, timeout int) error {
+	// Add your mock implementation here
+	return nil
+}
+
+func TestWaitUntilCardPresent(t *testing.T) {
+	// Mocked scard.Context for testing
+	mockCtx := &mockContext{}
+
+	// Test case 1: Card present in the first reader
+	readers1 := []string{"Reader1", "Reader2"}
+	result, err := waitUntilCardPresent(mockCtx, readers1)
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+	if result != 0 {
+		t.Errorf("Expected result 0, got %d", result)
+	}
+
+	// Test case 2: Card present in the second reader
+	readers2 := []string{"Reader2", "Reader1"}
+	result, err = waitUntilCardPresent(mockCtx, readers2)
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+	if result != 1 {
+		t.Errorf("Expected result 1, got %d", result)
+	}
+
+	// Add more test cases as needed
+
+	// Test case for error scenario
+	// mockCtxWithError := &mockContextWithError{} // Implement a mock with an error for GetStatusChange
+	// result, err = waitUntilCardPresent(mockCtxWithError, readers1)
+	// if err == nil {
+	// 	t.Error("Expected an error, but got nil")
+	// }
+
+	// You can add more test cases to cover edge cases and error scenarios
+}
 ```
